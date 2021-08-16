@@ -16,16 +16,22 @@ def get_move(board, player):
         if not len(inp) == 2:
             print("Not valid")
         else:
-            row = abc.find(inp[0])
-            col = inp[1] - 1
-            if row == -1 and 0 <= col < len(board) - 1:
-                print("Cordinate not on the board!")
+            if inp[0] in abc:
+                row = int(abc.find(inp[0]))
             else:
+                print("First cordinate not valid")
+            try:
+                col = int(inp[1]) - 1
+            except ValueError:
+                print("Second coordinat is not number")
+                continue
+            if not row == -1 and 0 <= col < len(board):
                 if board[row][col] == '.':
                     return row, col
                 else:
                     print("Cordinat already occupied")
-        
+            else:
+                print("Cordinate not on the board!")
 
 
 def get_ai_move(board, player):
