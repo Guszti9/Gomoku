@@ -8,7 +8,7 @@ def init_board(board_size):
     return board
 
 
-def get_move(board, player):
+def get_move(board):
     abc = "ABC"
     """Returns the coordinates of a valid move for player on board."""
     while True:
@@ -40,9 +40,13 @@ def get_ai_move(board, player):
     return row, col
 
 
-def mark(board, player, row, col):
-    """Marks the element at row & col on the board for player."""
-    pass
+def mark(board, player):
+    row, column = get_move(board)
+    if player == 0:
+        board[row][column] = "X"
+    else:
+        board[row][column] = "O"
+
 
 
 def has_won(board, player):
