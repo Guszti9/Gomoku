@@ -1,6 +1,10 @@
-def init_board():
-    """Returns an empty 3-by-3 board (with .)."""
+def init_board(board_size):
     board = []
+    for row in range(board_size):
+        new_row = []
+        for column in range(board_size):
+            new_row.append(".")
+        board.append(new_row)
     return board
 
 
