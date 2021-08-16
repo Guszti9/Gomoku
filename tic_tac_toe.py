@@ -9,9 +9,23 @@ def init_board(board_size):
 
 
 def get_move(board, player):
+    abc = "ABC"
     """Returns the coordinates of a valid move for player on board."""
-    row, col = 0, 0
-    return row, col
+    while True:
+        inp = input("Enter your cordinate!")
+        if not len(inp) == 2:
+            print("Not valid")
+        else:
+            row = abc.find(inp[0])
+            col = inp[1] - 1
+            if row == -1 and 0 <= col < len(board) - 1:
+                print("Cordinate not on the board!")
+            else:
+                if board[row][col] == '.':
+                    return row, col
+                else:
+                    print("Cordinat already occupied")
+        
 
 
 def get_ai_move(board, player):
