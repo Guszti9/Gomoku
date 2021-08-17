@@ -1,8 +1,9 @@
 from typing import Text
 
 
+abc = "ABCDEFGHIJKLMNOPQRST"
 
-def init_board(board_size, ):
+def init_board(board_size):
     """
         tested: True
     """
@@ -28,7 +29,6 @@ def is_coordinate_free(board, row, col):
 
 
 def get_move(board):
-    abc = "ABCDEFGHIJKLMNOPQRST"
     """Returns the coordinates of a valid move for player on board."""
     while True:
         inp = input("Enter your cordinate!")
@@ -102,38 +102,36 @@ def has_won(board, player):
 
 
 def is_full(board):
-    for row in board:
-        for column in row:
-            if board[row][column] == '.':
+    for row in range(len(board)):
+        for col in range(len(board)):
+            if board[row][col] == '.':
                 return False
     return True
 
 
 def print_board(board):
-    play_board = []
-    for i in board:
-        for k in i:
-            if k == 0:
-                play_board.append('.')
-            elif k == 1:
-                play_board.append('X')
-            else:
-                play_board.append('O')
-    print('')
-    print('     1   2   3')
-    print('')
-    print('       |   |')
-    print(' A   %s | %s | %s' % (play_board[0], play_board[1], play_board[2]))
-    print('       |   |')
-    print('   ----+---+----')
-    print('       |   |')
-    print(' B   %s | %s | %s' % (play_board[3], play_board[4], play_board[5]))
-    print('       |   |')
-    print('   ----+---+----')
-    print('       |   |')
-    print(' C   %s | %s | %s' % (play_board[6], play_board[7], play_board[8]))
-    print('       |   |')
-    return
+    board_print = []
+    for row in range(len(board)):
+        row_print = ""
+        for col in range(len(board) - 1):
+            row_print += f" {board[row][col]} |"
+        row_print += board[row][len(board) - 1]
+        board_print.append(row_print)
+
+    blank_line = "  ---"
+    for i in range(len(board) - 1):
+        blank_line += "+---"
+
+    first_line = ""
+    for number in range(1, len(board) + 1):
+        first_line += f"   {number}"
+
+    print(first_line)
+    print(abc[0] + ' ' + board_print[0])
+    for row in range(1, len(board)):
+        row_print = abc[row] + ' ' + board_print[row]
+        print(blank_line)
+        print(row_print)
 
 
 def print_result(winner):
@@ -158,4 +156,5 @@ def main_menu():
 
 
 if __name__ == '__main__':
+    print_board([['.', '.', '.', 'X'], ['.', '.', '.', 'Q'], ['.', '.', '.', 'X']])
     main_menu()
