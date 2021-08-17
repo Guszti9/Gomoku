@@ -1,3 +1,6 @@
+from typing import Text
+
+
 def init_board(board_size):
     board = []
     for row in range(board_size):
@@ -34,6 +37,12 @@ def get_move(board):
                 print("Cordinate not on the board!")
 
 
+def is_valid_coordinate(board, row, col):
+    if 0 <= row < len(board) and 0 <= col < len(board):
+        return True
+    return False
+
+
 def get_ai_move(board, player):
     """Returns the coordinates of a valid move for player on board."""
     row, col = 0, 0
@@ -48,15 +57,19 @@ def mark(board, player):
         board[row][column] = "O"
 
 
-
 def has_won(board, player):
     """Returns True if player has won the game."""
+    
+
     return False
 
 
 def is_full(board):
-    """Returns True if board is full."""
-    return False
+    for row in board:
+        for column in row:
+            if board[row][column] == '.':
+                return False
+    return True
 
 
 def print_board(board):
