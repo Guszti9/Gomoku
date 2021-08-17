@@ -1,12 +1,11 @@
-from typing import Text
+from os import system
+import random
 
 
 abc = "ABCDEFGHIJKLMNOPQRST"
 
-def init_board(board_size):
-    """
-        tested: True
-    """
+
+def init_board(board_size=3):
     board = []
     for row in range(board_size):
         new_row = []
@@ -29,25 +28,28 @@ def is_coordinate_free(board, row, col):
 
 
 def get_move(board):
-    """Returns the coordinates of a valid move for player on board."""
     while True:
         inp = input("Enter your cordinate!")
-        if inp[0] in abc:
-            row = int(abc.find(inp[0]))
-        else:
-            print("First cordinate not valid")
-        try:
-            col = int(inp[1:]) - 1
-        except ValueError:
-            print("Second coordinat is not number")
-            continue
-        if is_valid_coordinate(board, row, col):
-            if is_coordinate_free(board, row, col):
-                return row, col
+        if len(inp) > 1:
+            if inp[0] in abc:
+                row = int(abc.find(inp[0]))
             else:
-                print("Cordinat already occupied")
+                print("First cordinate not valid")
+                continue
+            try:
+                col = int(inp[1:]) - 1
+            except ValueError:
+                print("Second coordinat is not number")
+                continue
+            if is_valid_coordinate(board, row, col):
+                if is_coordinate_free(board, row, col):
+                    return row, col
+                else:
+                    print("Cordinat already occupied")
+            else:
+                print("Cordinate is out of board!")
         else:
-            print("Cordinate is not on the board!")
+            print("Input is too short!")
 
 
 def mark(board, player, row, col):
@@ -94,8 +96,8 @@ def is_coordinate_wons(board, row, col, player):
 
 
 def has_won(board, player):
-    for row in board:
-        for col in board:
+    for row in range(len(board)):
+        for col in range(len(board)):
             if is_coordinate_wons(board, row, col, player):
                 return True
     return False
@@ -109,22 +111,26 @@ def is_full(board):
     return True
 
 
+def clear():
+    _ = system('clear')
+
+
 def print_board(board):
     board_print = []
     for row in range(len(board)):
         row_print = ""
         for col in range(len(board) - 1):
             row_print += f" {board[row][col]} |"
-        row_print += board[row][len(board) - 1]
+        row_print += ' ' + board[row][len(board) - 1]
         board_print.append(row_print)
-
-    blank_line = "  ---"
-    for i in range(len(board) - 1):
-        blank_line += "+---"
 
     first_line = ""
     for number in range(1, len(board) + 1):
         first_line += f"   {number}"
+
+    blank_line = "  ---"
+    for i in range(len(board) - 1):
+        blank_line += "+---"
 
     print(first_line)
     print(abc[0] + ' ' + board_print[0])
@@ -132,23 +138,46 @@ def print_board(board):
         row_print = abc[row] + ' ' + board_print[row]
         print(blank_line)
         print(row_print)
+    print('\n')
 
 
-def print_result(winner):
-    """Congratulates winner or proclaims tie (if winner equals zero)."""
-    pass
+def print_result(result):
+    print(result)
+
+
+def get_result(board, player):
+    if has_won(board, player):
+        return f"Player {player}, Has won!"
+    if is_full(board):
+        return "It's a tie!"
+    return None
+
+
+def switch_player(player):
+    if player == 'X':
+        return 'o'
+    return 'X'
 
 
 def tictactoe_game(mode='HUMAN-HUMAN'):
     board = init_board()
+    player = random.choice(['X', 'O'])
 
-    # use get_move(), mark(), has_won(), is_full(), and print_board() to create game logic
-    print_board(board)
-    row, col = get_move(board, 1)
-    mark(board, 1, row, col)
+    while(True):
+        player = switch_player(player)
+        clear()
+        print_board(board)
 
-    winner = 0
-    print_result(winner)
+        print(f"It is {player} turn!")
+        row, col = get_move(board)
+        mark(board, player, row, col)
+
+        result = get_result(board, player)
+        if result is not None:
+            clear()
+            print_board(board)
+            print_result(result)
+            return
 
 
 def main_menu():
@@ -156,5 +185,5 @@ def main_menu():
 
 
 if __name__ == '__main__':
-    print_board([['.', '.', '.', 'X'], ['.', '.', '.', 'Q'], ['.', '.', '.', 'X']])
+    print_board([['.', '.', '.', 'X'], ['.', '.', '.', 'O'], ['.', '.', '.', 'X'], ['.', 'X', '.', 'X']])
     main_menu()
