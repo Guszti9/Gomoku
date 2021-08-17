@@ -1,4 +1,4 @@
-export const todo = [
+const todo = [
     {
         BACKLOG: [],
         TODO: [

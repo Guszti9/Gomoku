@@ -11,36 +11,49 @@ def init_board(board_size):
     return board
 
 
-def get_move(board):
-    abc = "ABC"
-    """Returns the coordinates of a valid move for player on board."""
-    while True:
-        inp = input("Enter your cordinate!")
-        if not len(inp) == 2:
-            print("Not valid")
-        else:
-            if inp[0] in abc:
-                row = int(abc.find(inp[0]))
-            else:
-                print("First cordinate not valid")
-            try:
-                col = int(inp[1]) - 1
-            except ValueError:
-                print("Second coordinat is not number")
-                continue
-            if not row == -1 and 0 <= col < len(board):
-                if board[row][col] == '.':
-                    return row, col
-                else:
-                    print("Cordinat already occupied")
-            else:
-                print("Cordinate not on the board!")
-
-
 def is_valid_coordinate(board, row, col):
     if 0 <= row < len(board) and 0 <= col < len(board):
         return True
     return False
+
+
+def is_coordinate_free(board, row, col):
+    if board[row][col] == '.':
+        return True
+    return False
+
+
+def get_move(board):
+    abc = "ABCDEFGHIJKLMNOPQRST"
+    """Returns the coordinates of a valid move for player on board."""
+    while True:
+        inp = input("Enter your cordinate!")
+        if inp[0] in abc:
+            row = int(abc.find(inp[0]))
+        else:
+            print("First cordinate not valid")
+        try:
+            col = int(inp[1:]) - 1
+        except ValueError:
+            print("Second coordinat is not number")
+            continue
+        if is_valid_coordinate(board, row, col):
+            if is_coordinate_free(board, row, col):
+                return row, col
+            else:
+                print("Cordinat already occupied")
+        else:
+            print("Cordinate is not on the board!")
+
+
+def mark(board, player, row, col):
+    if is_valid_coordinate(board, row, col):
+        if is_coordinate_free(board, row, col):
+            board[row][col] = player
+        else:
+            print("Coordinet in not free!")
+    else:
+        print("Coordinet is not on the board!")
 
 
 def get_ai_move(board, player):
@@ -49,18 +62,38 @@ def get_ai_move(board, player):
     return row, col
 
 
-def mark(board, player):
-    row, column = get_move(board)
-    if player == 0:
-        board[row][column] = "X"
-    else:
-        board[row][column] = "O"
+def is_coordinate_list_wons(board, list, player):
+    for coordinates in list:
+        if is_valid_coordinate(board, coordinates[0], coordinates[1]):
+            if not board[coordinates[0]][coordinates[1]] == player:
+                return False
+        else:
+            return False
+
+    return True
+
+
+def is_coordinate_wons(board, row, col, player):
+    row_win = [(row + r, col) for r in range(3)]
+    if is_coordinate_list_wons(board, row_win, player):
+        return True
+    col_win = [(row, col + c) for c in range(3)]
+    if is_coordinate_list_wons(board, col_win, player):
+        return True
+    diag_win_1 = [(row + d, col + d) for d in range(3)]
+    if is_coordinate_list_wons(board, diag_win_1, player):
+        return True
+    diag_win_2 = [(row - d, col + d) for d in range(3)]
+    if is_coordinate_list_wons(board, diag_win_2, player):
+        return True
+    return False
 
 
 def has_won(board, player):
-    """Returns True if player has won the game."""
-    
-
+    for row in board:
+        for col in board:
+            if is_coordinate_wons(board, row, col, player):
+                return True
     return False
 
 
