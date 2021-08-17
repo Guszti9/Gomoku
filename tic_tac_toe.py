@@ -1,7 +1,11 @@
 from typing import Text
 
 
-def init_board(board_size):
+
+def init_board(board_size, ):
+    """
+        tested: True
+    """
     board = []
     for row in range(board_size):
         new_row = []
@@ -106,8 +110,30 @@ def is_full(board):
 
 
 def print_board(board):
-    """Prints a 3-by-3 board on the screen with borders."""
-    pass
+    play_board = []
+    for i in board:
+        for k in i:
+            if k == 0:
+                play_board.append('.')
+            elif k == 1:
+                play_board.append('X')
+            else:
+                play_board.append('O')
+    print('')
+    print('     1   2   3')
+    print('')
+    print('       |   |')
+    print(' A   %s | %s | %s' % (play_board[0], play_board[1], play_board[2]))
+    print('       |   |')
+    print('   ----+---+----')
+    print('       |   |')
+    print(' B   %s | %s | %s' % (play_board[3], play_board[4], play_board[5]))
+    print('       |   |')
+    print('   ----+---+----')
+    print('       |   |')
+    print(' C   %s | %s | %s' % (play_board[6], play_board[7], play_board[8]))
+    print('       |   |')
+    return
 
 
 def print_result(winner):

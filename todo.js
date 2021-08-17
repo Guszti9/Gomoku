@@ -14,7 +14,8 @@ const todo = [
                         problems: [],
                         ideas: [],
                         tasks: [],
-                        time_spent: "",
+                        time_spent: undefined,
+                        tested: undefined
                     },
                     {
                         id: 2,
@@ -25,6 +26,7 @@ const todo = [
                         ideas: [],
                         tasks: [],
                         time_spent: undefined,
+                        tested: undefined
                     },
                     {
                         id: 3,
@@ -35,6 +37,7 @@ const todo = [
                         ideas: [],
                         tasks: [],
                         time_spent: undefined,
+                        tested: undefined
                     },
                     {
                         id: 4,
@@ -45,6 +48,7 @@ const todo = [
                         ideas: [],
                         tasks: [],
                         time_spent: undefined,
+                        tested: undefined
                     },
                     {
                         id: 5,
@@ -55,6 +59,7 @@ const todo = [
                         ideas: [],
                         tasks: [],
                         time_spent: undefined,
+                        tested: undefined
                     }
                 ]
             }
