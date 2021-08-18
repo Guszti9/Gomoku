@@ -10,17 +10,14 @@ X_WON = "x_won.txt"
 O_WON = "o_won.txt"
 TIED = "tie.txt"
 MENTOR_BOSS = "mentorBoss_loading.txt"
+PLAYERS = ['X', 'O']
 
 
-#Board functions
-def init_board(board_size=3):
-    board = []
-    for row in range(board_size):
-        new_row = []
-        for column in range(board_size):
-            new_row.append(".")
-        board.append(new_row)
-    return board
+#General functions
+def switch_player(player):
+    if player == 'X':
+        return 'O'
+    return 'X'
 
 
 def is_valid_coordinate(board, row, col):
@@ -33,6 +30,17 @@ def is_coordinate_free(board, row, col):
     if board[row][col] == '.':
         return True
     return False
+
+
+#Board functions
+def init_board(board_size=3):
+    board = []
+    for row in range(board_size):
+        new_row = []
+        for column in range(board_size):
+            new_row.append(".")
+        board.append(new_row)
+    return board
 
 
 def mark(board, player, row, col):
@@ -100,14 +108,8 @@ def get_result(board, player, need_to_connect):
 
 
 #AI engin
-def get_ai_move(board, player, need_to_connect):
-    weight_board = create_weighted_board(board, need_to_connect)
-
-    for row in weight_board:
-        str_row = ''
-        for elem in row:
-            str_row += ' ' + str(elem)
-        print(str_row)
+def get_ai_move(board, need_to_connect, player='O'):
+    weight_board = create_weighted_board(board, need_to_connect, player)
 
     best_value = max([max(weighted_row) for weighted_row in weight_board])
     potential_steps = get_all_potential(weight_board, best_value)
@@ -128,24 +130,24 @@ def get_all_potential(weight_board, best_value):
     return potential_steps
 
 
-def create_weighted_board(board, need_to_connect):
+def create_weighted_board(board, need_to_connect, player):
     weight_board = []
     for row in range(len(board)):
         wighted_row = []
         for col in range(len(board)):
             if board[row][col] == '.':
-                wighted_row.append(weight_field(board, row, col, need_to_connect))
+                wighted_row.append(weight_field(board, row, col, need_to_connect, player))
             else:
                 wighted_row.append(-1)
         weight_board.append(wighted_row)
     return weight_board
 
 
-def weight_field(board, row, col, need_to_connect):
+def weight_field(board, row, col, need_to_connect, player):
     row_list = [(row, c) for c in range(len(board))]
-    weight_row_list = weight_list(board, row_list, row, col, need_to_connect)
+    weight_row_list = weight_list(board, row_list, row, col, need_to_connect, player)
     col_list = [(r, col) for r in range(len(board))]
-    weight_col_list = weight_list(board, col_list, row, col, need_to_connect)
+    weight_col_list = weight_list(board, col_list, row, col, need_to_connect, player)
     diag_1_list = []
     diag_2_list = []
     for r in range(len(board)):
@@ -155,8 +157,8 @@ def weight_field(board, row, col, need_to_connect):
         c = row + col - r
         if len(board) - 1 >= c and c >= 0:
             diag_2_list.append((r, c))
-    weight_diag_1_list = weight_list(board, diag_1_list, row, col, need_to_connect)
-    weight_diag_2_list = weight_list(board, diag_2_list, row, col, need_to_connect)
+    weight_diag_1_list = weight_list(board, diag_1_list, row, col, need_to_connect, player)
+    weight_diag_2_list = weight_list(board, diag_2_list, row, col, need_to_connect, player)
 
     offensive_value = weight_row_list[0] + weight_col_list[0] + weight_diag_1_list[0] + weight_diag_2_list[0]
     defensive_value = weight_row_list[1] + weight_col_list[1] + weight_diag_1_list[1] + weight_diag_2_list[1]
@@ -164,40 +166,40 @@ def weight_field(board, row, col, need_to_connect):
     return offensive_value + defensive_value
 
 
-def weight_list(board, list, row, col, need_to_connect):
+def weight_list(board, list, row, col, need_to_connect, player):
     index = list.index((row, col))
     character_list = [board[cord[0]][cord[1]] for cord in list]
 
-    defensive_value = block_value(character_list, index, need_to_connect)
-    offens_value = attack_value(character_list, index, need_to_connect)
+    defensive_value = block_value(character_list, index, need_to_connect, player)
+    offens_value = attack_value(character_list, index, need_to_connect, player)
 
     return offens_value, defensive_value
 
 
-def attack_value(character_list, index, need_to_connect):
+def attack_value(character_list, index, need_to_connect, player):
     count = 1
     half_blocked = 0
 
-    if index > 0 and character_list[index - 1] == "O":
+    if index > 0 and character_list[index - 1] == player:
         i = index - 1
-        while i >= 0 and character_list[i] == "O":
+        while i >= 0 and character_list[i] == player:
             count += 1
             i -= 1
-            if i == 0 or character_list[i] == 'X':
+            if i == 0 or character_list[i] == switch_player(player):
                 half_blocked += 1
 
-    if index < len(character_list) - 1 and character_list[index + 1] == "O":
+    if index < len(character_list) - 1 and character_list[index + 1] == player:
         i = index + 1
-        while i < len(character_list) and character_list[i] == "O":
+        while i < len(character_list) and character_list[i] == player:
             count += 1
             i += 1
-            if i == len(character_list) or character_list[i] == 'X':
+            if i == len(character_list) or character_list[i] == switch_player(player):
                 half_blocked += 1
 
-    if index == 0 or character_list[index - 1] == "X":
+    if index == 0 or character_list[index - 1] == switch_player(player):
         half_blocked += 1
 
-    if index == len(character_list) - 1 or character_list[index + 1] == "X":
+    if index == len(character_list) - 1 or character_list[index + 1] == switch_player(player):
         half_blocked += 1
 
     return get_points_for_offens(count, half_blocked, need_to_connect)
@@ -228,28 +230,28 @@ def get_points_for_offens(count, half_blocked, need_to_connect):
     return point
 
 
-def block_value(character_list, index, need_to_connect):
+def block_value(character_list, index, need_to_connect, player):
     point = 0
 
-    if index > 0 and character_list[index - 1] == "X":
+    if index > 0 and character_list[index - 1] == switch_player(player):
         count = 0
         is_ather_half_block = False
         i = index - 1
-        while i >= 0 and character_list[i] == "X":
+        while i >= 0 and character_list[i] == switch_player(player):
             count += 1
             i -= 1
-            if i == 0 or character_list[i] == '0':
+            if i == 0 or character_list[i] == player:
                 is_ather_half_block = True
         point += get_points_for_defense(count, is_ather_half_block, need_to_connect)
 
-    if index < len(character_list) - 1 and character_list[index + 1] == "X":
+    if index < len(character_list) - 1 and character_list[index + 1] == switch_player(player):
         count = 0
         is_ather_half_block = False
         i = index + 1
-        while i < len(character_list) and character_list[i] == "X":
+        while i < len(character_list) and character_list[i] == switch_player(player):
             count += 1
             i += 1
-            if i == len(character_list) or character_list[i] == '0':
+            if i == len(character_list) or character_list[i] == player:
                 is_ather_half_block = True
         point += get_points_for_defense(count, is_ather_half_block, need_to_connect)
 
@@ -409,15 +411,9 @@ def get_move(board):
             print("Input is too short!")
 
 
-def switch_player(player):
-    if player == 'X':
-        return 'O'
-    return 'X'
-
-
 def tictactoe_game(board_size=3, need_to_connect=3, board_margin=0, mode='HUMAN-HUMAN'):
     board = init_board(board_size)
-    player = random.choice(['X', 'O'])
+    player = random.choice(PLAYERS)
 
     while(True):
         player = switch_player(player)
@@ -427,11 +423,16 @@ def tictactoe_game(board_size=3, need_to_connect=3, board_margin=0, mode='HUMAN-
 
         if mode == 'HUMAN-AI':
             if player == 'O':
-                coordinate = get_ai_move(board, player, need_to_connect)
+                coordinate = get_ai_move(board, need_to_connect)
             else:
                 coordinate = get_move(board)
-        else:
+
+        if mode == 'HUMAN_HUMAN':
             coordinate = get_move(board)
+
+        if mode == 'AI-AI':
+            coordinate = get_ai_move(board, need_to_connect, player)
+            time.sleep(1)
 
         if coordinate is None:
             return
@@ -479,7 +480,6 @@ def game_mode(board_size=3, need_to_connect=3, board_margin=0):
         if inp == '4':
             tictactoe_game(board_size, need_to_connect, board_margin, mode='AI-AI')
             return
-
 
 #MAIN
 if __name__ == '__main__':
