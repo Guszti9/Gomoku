@@ -7,7 +7,7 @@ LOGO = "logo.txt"
 GAME_OVER_1 = "game_over_1.txt"
 GAME_OVER_2 = "game_over_2.txt"
 X_WON = "x_won.txt"
-Y_WON = "y_won.txt"
+O_WON = "o_won.txt"
 TIED = "tie.txt"
 MENTOR_BOSS = "mentorBoss_loading.txt"
 
@@ -93,7 +93,7 @@ def get_result(board, player, need_to_connect):
         if player == 'X':
             return X_WON
         else:
-            return Y_WON
+            return O_WON
     if is_full(board):
         return TIED
     return None
@@ -168,7 +168,7 @@ def weight_list(board, list, row, col, need_to_connect):
     index = list.index((row, col))
     character_list = [board[cord[0]][cord[1]] for cord in list]
 
-    defensive_value = block_value(character_list, index)
+    defensive_value = block_value(character_list, index, need_to_connect)
     offens_value = attack_value(character_list, index, need_to_connect)
 
     return offens_value, defensive_value
@@ -209,6 +209,9 @@ def get_points_for_offens(count, half_blocked, need_to_connect):
     if count == need_to_connect:
         return 1000
 
+    if count == need_to_connect - 1 and half_blocked == 0:
+        return 100
+
     if count == 1 and half_blocked == 0:
         point = 0.5
     if count == 2:
@@ -218,14 +221,14 @@ def get_points_for_offens(count, half_blocked, need_to_connect):
             point = 1
     if count == 3:
         if half_blocked == 0:
-            point = 9
+            point = 16
         elif half_blocked == 1:
             point = 4
 
     return point
 
 
-def block_value(character_list, index):
+def block_value(character_list, index, need_to_connect):
     point = 0
 
     if index > 0 and character_list[index - 1] == "X":
@@ -237,7 +240,7 @@ def block_value(character_list, index):
             i -= 1
             if i == 0 or character_list[i] == '0':
                 is_ather_half_block = True
-        point += get_points_for_defense(count, is_ather_half_block)
+        point += get_points_for_defense(count, is_ather_half_block, need_to_connect)
 
     if index < len(character_list) - 1 and character_list[index + 1] == "X":
         count = 0
@@ -248,15 +251,21 @@ def block_value(character_list, index):
             i += 1
             if i == len(character_list) or character_list[i] == '0':
                 is_ather_half_block = True
-        point += get_points_for_defense(count, is_ather_half_block)
+        point += get_points_for_defense(count, is_ather_half_block, need_to_connect)
 
     return point
 
 
-def get_points_for_defense(count, is_ather_half_block):
+def get_points_for_defense(count, is_ather_half_block, need_to_connect):
+    if count == need_to_connect - 1:
+        return 500
+
+    if count == need_to_connect - 2 and not is_ather_half_block:
+        return 50
+
     point = 0
     if count == 1:
-        point += 1
+        point = 1
     if count == 2:
         if is_ather_half_block:
             point = 2
@@ -346,6 +355,19 @@ def print_main_menu():
     ''')
 
 
+def print_game_mode():
+    clear()
+    print_file(LOGO)
+    print('''
+               ---  1: Human vs Human       ---
+               ---  2: Human vs Ai          ---
+               ---  3: Human vs MentorBoss  ---
+               ---  4: Ai vs Ai             ---
+               ---          Quit            ---
+
+    ''')
+
+
 def print_mentorBoss_loading():
     clear()
     with open(MENTOR_BOSS, "r") as file:
@@ -393,7 +415,7 @@ def switch_player(player):
     return 'X'
 
 
-def tictactoe_game(mode='HUMAN-HUMAN',  board_size=3, need_to_connect=3, board_margin=0):
+def tictactoe_game(board_size=3, need_to_connect=3, board_margin=0, mode='HUMAN-HUMAN'):
     board = init_board(board_size)
     player = random.choice(['X', 'O'])
 
@@ -403,7 +425,7 @@ def tictactoe_game(mode='HUMAN-HUMAN',  board_size=3, need_to_connect=3, board_m
         print_board(board)
         print(f"It is {player} turn!")
 
-        if mode == 'VS-AI':
+        if mode == 'HUMAN-AI':
             if player == 'O':
                 coordinate = get_ai_move(board, player, need_to_connect)
             else:
@@ -423,21 +445,40 @@ def tictactoe_game(mode='HUMAN-HUMAN',  board_size=3, need_to_connect=3, board_m
 
 
 def main_menu():
-    print_mentorBoss_loading()
-
     while True:
         print_main_menu()
         inp = input()
         if inp.lower() == 'quit' or inp.lower() == 'q':
             return
         if inp == '1':
-            tictactoe_game(mode='VS-AI', board_margin=44)
+            game_mode(board_margin=44)
         if inp == '2':
-            tictactoe_game(board_size=5, need_to_connect=4, board_margin=40)
+            game_mode(board_size=5, need_to_connect=4, board_margin=40)
         if inp == '3':
-            tictactoe_game(mode='VS-AI', board_size=10, need_to_connect=5, board_margin=28)
+            game_mode(board_size=10, need_to_connect=5, board_margin=28)
         if inp == '4':
-            tictactoe_game(board_size=20, need_to_connect=5, board_margin=5)
+            game_mode(board_size=20, need_to_connect=5, board_margin=5)
+
+
+def game_mode(board_size=3, need_to_connect=3, board_margin=0):
+    while True:
+        print_game_mode()
+        inp = input()
+        if inp.lower() == 'quit' or inp.lower() == 'q':
+            return
+        if inp == '1':
+            tictactoe_game(board_size, need_to_connect, board_margin, mode='HUMAN-HUMAN')
+            return
+        if inp == '2':
+            tictactoe_game(board_size, need_to_connect, board_margin, mode='HUMAN-AI')
+            return
+        if inp == '3':
+            print_mentorBoss_loading()
+            tictactoe_game(board_size, need_to_connect, board_margin, mode='HUMAN-MENTORBOSS')
+            return
+        if inp == '4':
+            tictactoe_game(board_size, need_to_connect, board_margin, mode='AI-AI')
+            return
 
 
 #MAIN
