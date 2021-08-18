@@ -2,7 +2,6 @@ from os import system
 import random
 import time
 
-
 ABC = "ABCDEFGHIJKLMNOPQRST"
 LOGO = "logo.txt"
 GAME_OVER_1 = "game_over_1.txt"
@@ -10,6 +9,7 @@ GAME_OVER_2 = "game_over_2.txt"
 X_WON = "x_won.txt"
 Y_WON = "y_won.txt"
 TIED = "tie.txt"
+MENTOR_BOSS = "mentorBoss_loading.txt"
 
 
 #Board functions
@@ -346,6 +346,17 @@ def print_main_menu():
     ''')
 
 
+def print_mentorBoss_loading():
+    clear()
+    with open(MENTOR_BOSS, "r") as file:
+        lines = [line.split(' @ ') for line in file]
+        for line in lines:
+            print(line[0])
+            time.sleep(float(line[1].replace('\n', '')))
+
+    time.sleep(5)
+
+
 #Input functions
 def get_move(board):
     while True:
@@ -412,6 +423,8 @@ def tictactoe_game(mode='HUMAN-HUMAN',  board_size=3, need_to_connect=3, board_m
 
 
 def main_menu():
+    print_mentorBoss_loading()
+
     while True:
         print_main_menu()
         inp = input()

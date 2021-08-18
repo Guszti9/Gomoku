@@ -1,0 +1,54 @@
+-- MentorBoss Loading begin -- @ 0.5
+Load weapon sistem 10% @ 0.2
+Load weapon sistem 50% @ 0.1
+Load weapon sistem 66% @ 0.2
+open nuclear_weapon_code.txt @ 0.4
+ - acces acepted @ 0.1
+ - load Data @ 0.1
+Load veapon sistem 72% @ 0.4
+Connect to pc self_destruction_driver @ 0.5 
+ - connected @ 0.1
+Load veapon sistem 100% @ 1
+_______________________________________ @ 0.01
+Open crualty++ directory @ 0.2
+Open mmental_warfare directory @ 0.2
+Open crualty++_MORECRUALTY subdirectory @ 0.6
+_______________________________________ @ 0.01
+dowload cliché_boss_monolog74 @ 0.01
+    load 100% @ 0.1
+ - dowload compleated @ 0.3
+dowload intimidation_tactics33 @ 0.01
+    load 37% @ 0.1
+    load 55% @ 0.1
+    load 98% @ 0.1
+ - dowload compleated @ 0.3
+update --swearing-- directory @ 0.4
+_______________________________________ @ 0.01
+MENTOR_BOSS FULLY FUNCTIONABLE @ 0.5
+message: Your ultimate demise is near! @ 1
+ @ 0.1
+ @ 0.1 
+         .            )        )                    @ 0.05
+                  (  (|              .              @ 0.05
+              )   )\/ ( ( (                         @ 0.05
+      *  (   ((  /     ))\))  (  )    )             @ 0.05
+    (     \   )\(          |  ))( )  (|             @ 0.05
+    >)     ))/   |          )/  \((  ) \            @ 0.05
+    (     (      .        -.     V )/   )(    (     @ 0.05
+     \   /     .   \            .       \))   ))    @ 0.05
+       )(      (  | |   )            .    (  /      @ 0.05
+      )(    ,'))     \ /          \( `.    )        @ 0.05
+      (\>  ,'/__      ))            __`.  /         @ 0.05
+     ( \   | /  ___   ( \/     ___   \ | ( (        @ 0.05
+      \.)  |/  /   \__      __/   \   \|  ))        @ 0.05
+     .  \. |>  \      | __ |      /   <|  /         @ 0.05
+          )/    \____/ :..: \____/     \ <          @ 0.05
+   )   \ (|__  .      / ;: \          __| )  (      @ 0.05
+  ((    )\)  ~--_     --  --      _--~    /  ))     @ 0.05
+   \    (    |  ||               ||  |   (  /       @ 0.05
+         \.  |  ||_             _||  |  /           @ 0.05
+           > :  |  ~V+-I_I_I-+V~  |  : (.           @ 0.05
+          (  \:  T\   _     _   /T  : ./            @ 0.05
+           \  :    T^T T-+-T T^T    ;<              @ 0.05
+            \..`_       -+-       _'  )             @ 0.05
+               . `--=.._____..=--'. ./              @ 0.05
