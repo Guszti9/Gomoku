@@ -113,10 +113,11 @@ def get_result(board, player, need_to_connect):
 # Minimax method
 
 def get_ai_move_with_minimax(board, need_to_connect, x_best_move, max_depth, player='O'):
+    print(x_best_move, max_depth)
+
     simple_weight_board, board_statistice = create_weighted_board(board, need_to_connect, player)
 
     best_move = (-1, -1)
-
     best_val = -100000
     for coordinates in get_x_best_move(simple_weight_board, x_best_move):
         board[coordinates[0]][coordinates[1]] = player
@@ -131,6 +132,9 @@ def get_ai_move_with_minimax(board, need_to_connect, x_best_move, max_depth, pla
 
 def minimax_ai_move(board, need_to_connect, x_best_move, player='O', max_depth=4, depth=0):
     simple_weight_board, board_statistice = create_weighted_board(board, need_to_connect, player)
+
+    if depth == 0:
+        print("yay")
 
     if has_won(board, player, need_to_connect):
         if player == 'O':
@@ -196,7 +200,7 @@ def get_x_best_move(simple_weight_board, x):
 def sort_potential_steps(simple_weight_board, potential_steps, x):
     number_list = [simple_weight_board[row][col] for row, col in potential_steps]
 
-    for i in range(10):
+    for i in range(x):
         max_val = max(number_list)
         max_index = number_list.index(max_val)
         number_list[max_index] = -100
@@ -543,7 +547,7 @@ def x_best_move_by_board_size(board_size):
     if board_size == 3:
         return 9
     if board_size == 5:
-        return 1
+        return 5
     return 3
 
 
