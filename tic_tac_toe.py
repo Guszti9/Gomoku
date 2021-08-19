@@ -113,8 +113,6 @@ def get_result(board, player, need_to_connect):
 # Minimax method
 
 def get_ai_move_with_minimax(board, need_to_connect, x_best_move, max_depth, player='O'):
-    print(x_best_move, max_depth)
-
     simple_weight_board, board_statistice = create_weighted_board(board, need_to_connect, player)
 
     best_move = (-1, -1)
@@ -132,9 +130,6 @@ def get_ai_move_with_minimax(board, need_to_connect, x_best_move, max_depth, pla
 
 def minimax_ai_move(board, need_to_connect, x_best_move, player='O', max_depth=4, depth=0):
     simple_weight_board, board_statistice = create_weighted_board(board, need_to_connect, player)
-
-    if depth == 0:
-        print("yay")
 
     if has_won(board, player, need_to_connect):
         if player == 'O':
@@ -548,15 +543,15 @@ def x_best_move_by_board_size(board_size):
         return 9
     if board_size == 5:
         return 5
-    return 3
+    return 5
 
 
 def get_max_depth_by_board_size(board_size):
     if board_size == 3:
         return 4
     if board_size == 5:
-        return 1
-    return 2
+        return 4
+    return 3
 
 
 def tictactoe_game(board_size=3, need_to_connect=3, board_margin=0, mode='HUMAN-HUMAN'):
