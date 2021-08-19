@@ -13,7 +13,8 @@ MENTOR_BOSS = "mentorBoss_loading.txt"
 PLAYERS = ['X', 'O']
 
 
-#General functions
+# General functions
+
 def switch_player(player):
     if player == 'X':
         return 'O'
@@ -32,7 +33,8 @@ def is_coordinate_free(board, row, col):
     return False
 
 
-#Board functions
+# Board functions
+
 def init_board(board_size=3):
     board = []
     for row in range(board_size):
@@ -107,26 +109,123 @@ def get_result(board, player, need_to_connect):
     return None
 
 
-#AI engin
-def get_ai_move(board, need_to_connect, player='O'):
-    weight_board = create_weighted_board(board, need_to_connect, player)
+# AI engin
+# Minimax method
 
-    best_value = max([max(weighted_row) for weighted_row in weight_board])
-    potential_steps = get_all_potential(weight_board, best_value)
+def get_ai_move_with_minimax(board, need_to_connect, x_best_move, max_depth, player='O'):
+    simple_weight_board, board_statistice = create_weighted_board(board, need_to_connect, player)
+
+    best_move = (-1, -1)
+
+    best_val = -100000
+    for coordinates in get_x_best_move(simple_weight_board, x_best_move):
+        board[coordinates[0]][coordinates[1]] = player
+        move_val = minimax_ai_move(board, need_to_connect, x_best_move, switch_player(player), max_depth)
+        board[coordinates[0]][coordinates[1]] = '.'
+        if best_val < move_val:
+            best_val = move_val
+            best_move = coordinates
+
+    return best_move
+
+
+def minimax_ai_move(board, need_to_connect, x_best_move, player='O', max_depth=4, depth=0):
+    simple_weight_board, board_statistice = create_weighted_board(board, need_to_connect, player)
+
+    if has_won(board, player, need_to_connect):
+        if player == 'O':
+            return 10000
+        else:
+            return -10000
+
+    if has_won(board, switch_player(player), need_to_connect):
+        if switch_player(player) == 'O':
+            return 10000
+        else:
+            return -10000
+
+    if is_full(board):
+        return 0
+
+    if depth == max_depth:
+        if player == 'O':
+            return board_statistice[0] - board_statistice[1]
+        else:
+            return board_statistice[1] - board_statistice[0]
+
+    if player == 'O':
+        best = - 100000
+        for coordinates in get_x_best_move(simple_weight_board, x_best_move):
+            board[coordinates[0]][coordinates[1]] = player
+
+            best = max(best, minimax_ai_move(board, need_to_connect, x_best_move, switch_player(player), max_depth, depth + 1))
+
+            board[coordinates[0]][coordinates[1]] = '.'
+
+        return best
+    else:
+        best = 100000
+        for coordinates in get_x_best_move(simple_weight_board, x_best_move):
+            board[coordinates[0]][coordinates[1]] = player
+
+            best = min(best, minimax_ai_move(board, need_to_connect, x_best_move, switch_player(player), max_depth, depth + 1))
+
+            board[coordinates[0]][coordinates[1]] = '.'
+        return best
+
+
+def get_x_best_move(simple_weight_board, x):
+    potential_steps = []
+    r = 0
+    for row in simple_weight_board:
+        c = 0
+        for col in row:
+            if col >= 0:
+                if len(potential_steps) < x:
+                    potential_steps.append((r, c))
+                else:
+                    sort_potential_steps(simple_weight_board, potential_steps, x)
+                    if col > simple_weight_board[potential_steps[x-1][0]][potential_steps[x-1][1]]:
+                        potential_steps[x-1] = (r, c)
+            c += 1
+        r += 1
+
+    return potential_steps
+
+
+def sort_potential_steps(simple_weight_board, potential_steps, x):
+    number_list = [simple_weight_board[row][col] for row, col in potential_steps]
+
+    for i in range(10):
+        max_val = max(number_list)
+        max_index = number_list.index(max_val)
+        number_list[max_index] = -100
+        potential_steps.append(potential_steps[max_index])
+    del potential_steps[0:x]
+
+
+# Basic Method
+
+def get_ai_move(board, need_to_connect, player='O'):
+    simple_weight_board, board_statistice = create_weighted_board(board, need_to_connect, player)
+
+    best_value = max([max(weighted_row) for weighted_row in simple_weight_board])
+    potential_steps = get_all_potential(simple_weight_board, best_value)
 
     return random.choice(potential_steps)
 
 
-def get_all_potential(weight_board, best_value):
+def get_all_potential(simple_weight_board, best_value):
     r = 0
     potential_steps = []
-    for row in weight_board:
+    for row in simple_weight_board:
         c = 0
         for col in row:
             if col == best_value:
                 potential_steps.append((r, c))
             c += 1
         r += 1
+
     return potential_steps
 
 
@@ -140,7 +239,34 @@ def create_weighted_board(board, need_to_connect, player):
             else:
                 wighted_row.append(-1)
         weight_board.append(wighted_row)
-    return weight_board
+
+    return get_simple_weight_board(weight_board), get_board_statistice(weight_board)
+
+
+def get_simple_weight_board(weight_board):
+    simple_weight_board = []
+    for weighted_row in weight_board:
+        simple_weight_row = []
+        for element in weighted_row:
+            if element == -1:
+                simple_weight_row.append(-1)
+            else:
+                simple_weight_row.append(element[0] + element[1])
+        simple_weight_board.append(simple_weight_row)
+
+    return simple_weight_board
+
+
+def get_board_statistice(weight_board):
+    offens_statistice = 0
+    defensive_statistice = 0
+    for weighted_row in weight_board:
+        for element in weighted_row:
+            if not element == -1:
+               offens_statistice += element[0]
+               defensive_statistice += element[1]
+
+    return offens_statistice, defensive_statistice
 
 
 def weight_field(board, row, col, need_to_connect, player):
@@ -163,7 +289,7 @@ def weight_field(board, row, col, need_to_connect, player):
     offensive_value = weight_row_list[0] + weight_col_list[0] + weight_diag_1_list[0] + weight_diag_2_list[0]
     defensive_value = weight_row_list[1] + weight_col_list[1] + weight_diag_1_list[1] + weight_diag_2_list[1]
 
-    return offensive_value + defensive_value
+    return offensive_value, defensive_value
 
 
 def weight_list(board, list, row, col, need_to_connect, player):
@@ -226,6 +352,8 @@ def get_points_for_offens(count, half_blocked, need_to_connect):
             point = 16
         elif half_blocked == 1:
             point = 4
+    if count == 4 and half_blocked == 1:
+        point = 15
 
     return point
 
@@ -284,7 +412,7 @@ def get_points_for_defense(count, is_ather_half_block, need_to_connect):
     return point
 
 
-#Print functions
+# Print functions
 def clear():
     _ = system('clear')
 
@@ -381,7 +509,7 @@ def print_mentorBoss_loading():
     time.sleep(5)
 
 
-#Input functions
+# Input functions
 def get_move(board):
     while True:
         inp = input("Enter your cordinate!")
@@ -411,9 +539,28 @@ def get_move(board):
             print("Input is too short!")
 
 
+def x_best_move_by_board_size(board_size):
+    if board_size == 3:
+        return 9
+    if board_size == 5:
+        return 1
+    return 3
+
+
+def get_max_depth_by_board_size(board_size):
+    if board_size == 3:
+        return 4
+    if board_size == 5:
+        return 1
+    return 2
+
+
 def tictactoe_game(board_size=3, need_to_connect=3, board_margin=0, mode='HUMAN-HUMAN'):
     board = init_board(board_size)
     player = random.choice(PLAYERS)
+
+    x_best_move = x_best_move_by_board_size(board_size)
+    max_depth = get_max_depth_by_board_size(board_size)
 
     while(True):
         player = switch_player(player)
@@ -421,14 +568,20 @@ def tictactoe_game(board_size=3, need_to_connect=3, board_margin=0, mode='HUMAN-
         print_board(board)
         print(f"It is {player} turn!")
 
+        if mode == 'HUMAN_HUMAN':
+            coordinate = get_move(board)
+
         if mode == 'HUMAN-AI':
             if player == 'O':
                 coordinate = get_ai_move(board, need_to_connect)
             else:
                 coordinate = get_move(board)
 
-        if mode == 'HUMAN_HUMAN':
-            coordinate = get_move(board)
+        if mode == 'HUMAN-MENTORBOSS':
+            if player == 'O':
+                coordinate = get_ai_move_with_minimax(board, need_to_connect, x_best_move, max_depth)
+            else:
+                coordinate = get_move(board)
 
         if mode == 'AI-AI':
             coordinate = get_ai_move(board, need_to_connect, player)
@@ -481,6 +634,8 @@ def game_mode(board_size=3, need_to_connect=3, board_margin=0):
             tictactoe_game(board_size, need_to_connect, board_margin, mode='AI-AI')
             return
 
-#MAIN
+
+# MAIN
+
 if __name__ == '__main__':
     main_menu()
