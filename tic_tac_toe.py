@@ -477,7 +477,7 @@ def print_main_menu():
     print('''
                   ---  1: Tic-Tac-Toe   ---
                   ---  2: Small Board   ---
-                  ---  3: Madium Board  ---
+                  ---  3: Medium Board  ---
                   ---  4:  Huge Board   ---
                   ---       Quit        ---
 
@@ -567,7 +567,7 @@ def tictactoe_game(board_size=3, need_to_connect=3, board_margin=0, mode='HUMAN-
         print_board(board)
         print(f"It is {player} turn!")
 
-        if mode == 'HUMAN_HUMAN':
+        if mode == 'HUMAN-HUMAN':
             coordinate = get_move(board)
 
         if mode == 'HUMAN-AI':
@@ -585,6 +585,8 @@ def tictactoe_game(board_size=3, need_to_connect=3, board_margin=0, mode='HUMAN-
         if mode == 'AI-AI':
             coordinate = get_ai_move(board, need_to_connect, player)
             time.sleep(1)
+
+        print(coordinate)
 
         if coordinate is None:
             return
