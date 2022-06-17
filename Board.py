@@ -47,7 +47,7 @@ class Board:
     def get_cells_in_down_diag(self, row, col):
         dif = row - col
         first_row = dif if dif > 0 else 0
-        first_col = dif if dif < 0 else 0
+        first_col = abs(dif) if dif < 0 else 0
         return [self.__board[first_row + d][first_col + d] for d in range(self.__board_size - abs(dif))]
 
     def get_cells_in_up_diag(self, row, col):
