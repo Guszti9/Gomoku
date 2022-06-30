@@ -28,43 +28,58 @@ class WeightedBoard:
         cells_in_row = self.get_cells_in_row(row)
         for cord_1, cord_2 in WeightedBoard.__get_relevant_sublist(col, cells_in_row, 6):
             if isinstance(self.__board[cord_1][cord_2], WeightedCell):
-                self.__calculate_cord_value(cord_1, cord_2)
+                self.__calculate_cord_row_val(cord_1, cord_2)
 
         cells_in_col = self.get_cells_in_col(col)
         for cord_1, cord_2 in WeightedBoard.__get_relevant_sublist(row, cells_in_col, 6):
             if isinstance(self.__board[cord_1][cord_2], WeightedCell):
-                self.__calculate_cord_value(cord_1, cord_2)
+                self.__calculate_cord_col_val(cord_1, cord_2)
 
         cells_in_down_diag = self.get_cells_in_down_diag(row, col)
         for cord_1, cord_2 in WeightedBoard.__get_relevant_sublist(min(row, col), cells_in_down_diag, 6):
             if isinstance(self.__board[cord_1][cord_2], WeightedCell):
-                self.__calculate_cord_value(cord_1, cord_2)
+                self.__calculate_cord_down_val(cord_1, cord_2)
 
         cells_in_up_diag = self.get_cells_in_up_diag(row, col)
         for cord_1, cord_2 in WeightedBoard.__get_relevant_sublist(min(self.__board_size - row - 1, col), cells_in_up_diag, 6):
             if isinstance(self.__board[cord_1][cord_2], WeightedCell):
-                self.__calculate_cord_value(cord_1, cord_2)
+                self.__calculate_cord_up_val(cord_1, cord_2)
 
     def __calculate_cord_value(self, row, col):
+        self.__calculate_cord_row_val(row, col)
+        self.__calculate_cord_col_val(row, col)
+        self.__calculate_cord_down_val(row, col)
+
+    def __calculate_cord_row_val(self, row, col):
         cell = self.__board[row][col]
 
         cells_in_row = self.get_cells_in_row(row)
         string_in_row = self.__create_string(cells_in_row)
         cell.change_row_val(self.__pattern_recogniser.get_best_pattern_value_in_str(string_in_row, col))
 
+    def __calculate_cord_col_val(self, row, col):
+        cell = self.__board[row][col]
+
         cells_in_col = self.get_cells_in_col(col)
         string_in_col = self.__create_string(cells_in_col)
         cell.change_col_val(self.__pattern_recogniser.get_best_pattern_value_in_str(string_in_col, row))
 
+    def __calculate_cord_down_val(self, row, col):
+        cell = self.__board[row][col]
+
         cells_in_down_diag = self.get_cells_in_down_diag(row, col)
         string_in_down_diag = self.__create_string(cells_in_down_diag)
         cell.change_diag_down_val(self.__pattern_recogniser
-                                      .get_best_pattern_value_in_str(string_in_down_diag, min(row, col)))
+                                  .get_best_pattern_value_in_str(string_in_down_diag, min(row, col)))
+
+    def __calculate_cord_up_val(self, row, col):
+        cell = self.__board[row][col]
 
         cells_in_up_diag = self.get_cells_in_up_diag(row, col)
         string_in_up_diag = self.__create_string(cells_in_up_diag)
         cell.change_diag_up_val(self.__pattern_recogniser
-                                    .get_best_pattern_value_in_str(string_in_up_diag, min(self.__board_size - row - 1, col)))
+                                .get_best_pattern_value_in_str(string_in_up_diag,
+                                                               min(self.__board_size - row - 1, col)))
 
     def __create_string(self, cord_list):
         char_list = []
