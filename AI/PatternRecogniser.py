@@ -39,6 +39,9 @@ class PatternRecogniser:
         self.__player = player
 
     def __create_string(self, string, ind):
+        char_list = list(string)
+        char_list[ind] = "|"
+        string = "".join(char_list)
         string = string.replace(self.__player, "|")
         return PatternRecogniser.__get_relevant_substring(ind, string, 6)
 
