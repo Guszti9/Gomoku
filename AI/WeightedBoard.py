@@ -20,10 +20,33 @@ class WeightedBoard:
             self.__board.append(new_row)
         for row in range(self.__board_size):
             for col in range(self.__board_size):
-                self.calculate_cord_value(row, col)
+                self.__calculate_cord_value(row, col)
 
-    def calculate_cord_value(self, row, col):
-        cell =  self.__board[row][col]
+    def mark_board(self, row, col, player):
+        self.__board[row][col] = player
+
+        cells_in_row = self.get_cells_in_row(row)
+        for cord_1, cord_2 in WeightedBoard.__get_relevant_sublist(col, cells_in_row, 6):
+            if isinstance(self.__board[cord_1][cord_2], WeightedCell):
+                self.__calculate_cord_value(cord_1, cord_2)
+
+        cells_in_col = self.get_cells_in_col(col)
+        for cord_1, cord_2 in WeightedBoard.__get_relevant_sublist(row, cells_in_col, 6):
+            if isinstance(self.__board[cord_1][cord_2], WeightedCell):
+                self.__calculate_cord_value(cord_1, cord_2)
+
+        cells_in_down_diag = self.get_cells_in_down_diag(row, col)
+        for cord_1, cord_2 in WeightedBoard.__get_relevant_sublist(min(row, col), cells_in_down_diag, 6):
+            if isinstance(self.__board[cord_1][cord_2], WeightedCell):
+                self.__calculate_cord_value(cord_1, cord_2)
+
+        cells_in_up_diag = self.get_cells_in_up_diag(row, col)
+        for cord_1, cord_2 in WeightedBoard.__get_relevant_sublist(min(self.__board_size - row - 1, col), cells_in_up_diag, 6):
+            if isinstance(self.__board[cord_1][cord_2], WeightedCell):
+                self.__calculate_cord_value(cord_1, cord_2)
+
+    def __calculate_cord_value(self, row, col):
+        cell = self.__board[row][col]
 
         cells_in_row = self.get_cells_in_row(row)
         string_in_row = self.__create_string(cells_in_row)
@@ -35,7 +58,8 @@ class WeightedBoard:
 
         cells_in_down_diag = self.get_cells_in_down_diag(row, col)
         string_in_down_diag = self.__create_string(cells_in_down_diag)
-        cell.change_diag_down_val(self.__pattern_recogniser.get_best_pattern_value_in_str(string_in_down_diag, min(row, col)))
+        cell.change_diag_down_val(self.__pattern_recogniser
+                                      .get_best_pattern_value_in_str(string_in_down_diag, min(row, col)))
 
         cells_in_up_diag = self.get_cells_in_up_diag(row, col)
         string_in_up_diag = self.__create_string(cells_in_up_diag)
@@ -76,11 +100,16 @@ class WeightedBoard:
             new_row = ""
             for col in range(self.__board_size):
                 if isinstance(self.__board[row][col], WeightedCell):
-                    new_row += f"{self.__board[row][col].get_cell_value()}  "
+                    new_row += f"{self.__board[row][col].get_cell_value(): <5}  "
                 else:
-                    new_row += f"{self.__board[row][col]}  "
-            new_row += "\n"
+                    new_row += f"{self.__board[row][col]: <5}  "
+            new_row += "\n\n"
             string += new_row
 
         return string
 
+    @staticmethod
+    def __get_relevant_sublist(ind, cord_list, pattern_length):
+        substring_start_ind = ind - (pattern_length - 1) if ind - (pattern_length - 1) > 0 else 0
+        substring_end_ind = ind + pattern_length if ind + pattern_length < len(cord_list) + 1 else len(cord_list) + 1
+        return cord_list[substring_start_ind: substring_end_ind]

@@ -12,6 +12,7 @@ class PatternRecogniser:
         "...||.": 100,
         "..|.|.": 100,
         ".|.|..": 100,
+        ".|..|.": 50,
         "..|...": 10,
         "...|..": 10
     }
@@ -43,13 +44,15 @@ class PatternRecogniser:
         char_list[ind] = "|"
         string = "".join(char_list)
         string = string.replace(self.__player, "|")
-        return PatternRecogniser.__get_relevant_substring(ind, string, 6)
+        return string
 
     def get_best_pattern_value_in_str(self, string, ind):
         string = self.__create_string(string, ind)
+
+        string_for_six = PatternRecogniser.__get_relevant_substring(ind, string, 6)
         string_for_five = PatternRecogniser.__get_relevant_substring(ind, string, 5)
 
-        return max(self.__five_pattern_value(string_for_five), self.__six_pattern_value(string))
+        return max(self.__five_pattern_value(string_for_five), self.__six_pattern_value(string_for_six))
 
     @staticmethod
     def __get_relevant_substring(ind, string, pattern_length):
