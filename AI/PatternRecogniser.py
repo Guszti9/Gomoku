@@ -40,6 +40,12 @@ class PatternRecogniser:
         string = string.replace(self.__player, "|")
         return max(self.__five_pattern_value(string), self.__six_pattern_value(string))
 
+    @staticmethod
+    def get_relevant_substring(ind, string, pattern_length):
+        substring_start_ind = ind - (pattern_length - 1) if ind - (pattern_length - 1) > 0 else 0
+        substring_end_ind = ind + pattern_length if ind + pattern_length < len(string) + 1 else len(string) + 1
+        return string[substring_start_ind: substring_end_ind]
+
     def __five_pattern_value(self, string):
         max_value = 0
         for substring in [string[ind - 5:ind] for ind in range(5, len(string) + 1)]:
