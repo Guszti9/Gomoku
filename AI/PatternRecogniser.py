@@ -8,6 +8,8 @@ class PatternRecogniser:
         ".||.|.": 500,
         ".|.||.": 500,
         "..||..": 100,
+        ".||...": 100,
+        "...||.": 100,
         "..|.|.": 100,
         ".|.|..": 100,
         "..|...": 10,
@@ -36,12 +38,18 @@ class PatternRecogniser:
     def __init__(self, player):
         self.__player = player
 
-    def get_best_pattern_value_in_str(self, string):
+    def __create_string(self, string, ind):
         string = string.replace(self.__player, "|")
-        return max(self.__five_pattern_value(string), self.__six_pattern_value(string))
+        return PatternRecogniser.__get_relevant_substring(ind, string, 6)
+
+    def get_best_pattern_value_in_str(self, string, ind):
+        string = self.__create_string(string, ind)
+        string_for_five = PatternRecogniser.__get_relevant_substring(ind, string, 5)
+
+        return max(self.__five_pattern_value(string_for_five), self.__six_pattern_value(string))
 
     @staticmethod
-    def get_relevant_substring(ind, string, pattern_length):
+    def __get_relevant_substring(ind, string, pattern_length):
         substring_start_ind = ind - (pattern_length - 1) if ind - (pattern_length - 1) > 0 else 0
         substring_end_ind = ind + pattern_length if ind + pattern_length < len(string) + 1 else len(string) + 1
         return string[substring_start_ind: substring_end_ind]
