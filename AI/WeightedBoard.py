@@ -1,16 +1,18 @@
-from AICell import WeightedCell
-from PatternRecogniser import PatternRecogniser
+from AI.AICell import WeightedCell
+from AI.PatternRecogniser import PatternRecogniser
 
 
 class WeightedBoard:
-    __board_size = 0
     __need_to_connect = 5
-    __board = []
-    __player = None
-    __pattern_recogniser = None
+
+    def get_cord_val(self, row, col):
+        if isinstance(self.__board[row][col], WeightedCell):
+            return self.__board[row][col].get_cell_value()
+        return None
 
     def __init__(self, board_size, player):
         self.__board_size = board_size
+        self.__board = []
         self.__player = player
         self.__pattern_recogniser = PatternRecogniser(player)
         for row in range(board_size):
@@ -49,6 +51,7 @@ class WeightedBoard:
         self.__calculate_cord_row_val(row, col)
         self.__calculate_cord_col_val(row, col)
         self.__calculate_cord_down_val(row, col)
+        self.__calculate_cord_up_val(row, col)
 
     def __calculate_cord_row_val(self, row, col):
         cell = self.__board[row][col]
@@ -120,7 +123,6 @@ class WeightedBoard:
                     new_row += f"{self.__board[row][col]: <5}  "
             new_row += "\n\n"
             string += new_row
-
         return string
 
     @staticmethod

@@ -34,8 +34,6 @@ class PatternRecogniser:
         "|.|.|": 200,
     }
 
-    __player = None
-
     def __init__(self, player):
         self.__player = player
 

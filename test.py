@@ -1,5 +1,5 @@
 from Game import Game
 
-game = Game(5, 4)
+game = Game(15, 5)
 game.play_game()
 

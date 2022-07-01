@@ -1,4 +1,5 @@
 import random
+from AI.AI import AI
 from Board import Board
 from Printer import Printer
 
@@ -11,9 +12,11 @@ TIED = "tie.txt"
 
 class Game:
     __board = None
+    __board_size = 0
     actual_player = "O"
 
     def __init__(self, board_size, need_to_connect):
+        self.__board_size = board_size
         self.__board = Board(board_size, need_to_connect)
 
     def __get_move(self):
@@ -51,14 +54,19 @@ class Game:
 
     def play_game(self, board_margin=0):
         self.actual_player = random.choice(PLAYERS)
+        ai_player = random.choice(PLAYERS)
+        ai = AI(self.__board_size, ai_player)
 
         while True:
             self.actual_player = self.switch_player()
+            coordinate = ai.get_next_move()
             Printer.clear()
             Printer.print_board(self.__board.create_str())
+            print(ai.create_string())
             print(f"It is {self.actual_player} turn!")
 
-            coordinate = self.__get_move()
+            if self.actual_player != ai_player:
+                coordinate = self.__get_move()
 
             print(coordinate)
 
@@ -66,6 +74,7 @@ class Game:
                 return
 
             self.__board.mark(self.actual_player, coordinate[0], coordinate[1])
+            ai.mark_cord(coordinate[0], coordinate[1], self.actual_player)
 
             result = self.__get_result(coordinate[0], coordinate[1])
             if result is not None:
