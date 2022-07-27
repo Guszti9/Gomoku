@@ -1,5 +1,6 @@
 import random
 from AI.AI import AI
+from AI.MinimaxAi import MinimaxAi
 from Board import Board
 from Printer import Printer
 
@@ -55,17 +56,17 @@ class Game:
     def play_game(self, board_margin=0):
         self.actual_player = random.choice(PLAYERS)
         ai_player = random.choice(PLAYERS)
-        ai = AI(self.__board_size, ai_player)
+        ai = MinimaxAi(self.__board_size, ai_player)
 
         while True:
             self.actual_player = self.switch_player()
-            coordinate = ai.get_next_move()
             Printer.clear()
             Printer.print_board(self.__board.create_str())
-            print(ai.create_string())
             print(f"It is {self.actual_player} turn!")
 
-            if self.actual_player != ai_player:
+            if ai_player == self.actual_player:
+                coordinate = ai.get_next_move()
+            else:
                 coordinate = self.__get_move()
 
             print(coordinate)

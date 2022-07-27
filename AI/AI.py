@@ -6,7 +6,7 @@ class AI:
     def __init__(self, board_size, player):
         self.__player = player
         self.__board_size = board_size
-        self. __calculated_board = []
+        self.__calculated_board = []
         self.__board_X = WeightedBoard(board_size, "X")
         self.__board_O = WeightedBoard(board_size, "O")
 
@@ -30,7 +30,7 @@ class AI:
                     cell_value = cell_x_val + cell_o_val/2 if self.__player == "X" else cell_x_val/2 + cell_o_val
                     self.__calculated_board[row][col] = cell_value
 
-    def __get_best_move(self):
+    def __get_best_moves(self):
         self.__calculate_board()
         best_moves = []
         best_move_val = 0
@@ -60,5 +60,5 @@ class AI:
         return string
 
     def get_next_move(self):
-        best_moves = self.__get_best_move()
+        best_moves = self.__get_best_moves()
         return random.choice(best_moves)

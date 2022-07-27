@@ -10,6 +10,13 @@ class WeightedBoard:
             return self.__board[row][col].get_cell_value()
         return None
 
+    def get_weighted_board_value(self):
+        board_sum = 0
+        for row in self.__board:
+            for cell in row:
+                if isinstance(cell, WeightedCell):
+                    board_sum += cell.get_cell_value()
+
     def __init__(self, board_size, player):
         self.__board_size = board_size
         self.__board = []
@@ -26,7 +33,13 @@ class WeightedBoard:
 
     def mark_board(self, row, col, player):
         self.__board[row][col] = player
+        self.__recalculate_bord_by_move(row, col)
 
+    def delete_mark(self, row, col):
+        self.__board[row][col] = WeightedCell()
+        self.__recalculate_bord_by_move(row, col)
+
+    def __recalculate_bord_by_move(self, row, col):
         cells_in_row = self.get_cells_in_row(row)
         for cord_1, cord_2 in WeightedBoard.__get_relevant_sublist(col, cells_in_row, 6):
             if isinstance(self.__board[cord_1][cord_2], WeightedCell):
@@ -43,7 +56,8 @@ class WeightedBoard:
                 self.__calculate_cord_down_val(cord_1, cord_2)
 
         cells_in_up_diag = self.get_cells_in_up_diag(row, col)
-        for cord_1, cord_2 in WeightedBoard.__get_relevant_sublist(min(self.__board_size - row - 1, col), cells_in_up_diag, 6):
+        for cord_1, cord_2 in WeightedBoard.__get_relevant_sublist(min(self.__board_size - row - 1, col),
+                                                                   cells_in_up_diag, 6):
             if isinstance(self.__board[cord_1][cord_2], WeightedCell):
                 self.__calculate_cord_up_val(cord_1, cord_2)
 
