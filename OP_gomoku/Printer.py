@@ -1,10 +1,10 @@
 import time
 from os import system
 
-GAME_OVER_1 = "game_over_1.txt"
-GAME_OVER_2 = "game_over_2.txt"
-MENTOR_BOSS = "mentorBoss_loading.txt"
-LOGO = "logo.txt"
+GAME_OVER_1 = "Text/game_over_1.txt"
+GAME_OVER_2 = "Text/game_over_2.txt"
+MENTOR_BOSS = "Text/mentorBoss_loading.txt"
+LOGO = "Text/logo.txt"
 
 
 class Printer:

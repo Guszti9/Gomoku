@@ -1,6 +1,6 @@
-from AI.PatternRecogniser import PatternRecogniser
-from AI.WeightedBoard import WeightedBoard
-from AI.AI import AI
+from OP_gomoku.AI.PatternRecogniser import PatternRecogniser
+from OP_gomoku.AI.WeightedBoard import WeightedBoard
+from OP_gomoku.AI.AI import AI
 
 patternRecogniser = PatternRecogniser("O")
 print(patternRecogniser.get_best_pattern_value_in_str("..OOO.OX..OO.", 1))

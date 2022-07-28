@@ -1,24 +1,23 @@
 import random
-from AI.AI import AI
-from AI.MinimaxAi import MinimaxAi
 from Board import Board
 from Printer import Printer
+from AI.AI import AI
 
 ABC = "ABCDEFGHIJKLMNOPQRST"
 PLAYERS = ['X', 'O']
-X_WON = "x_won.txt"
-O_WON = "o_won.txt"
-TIED = "tie.txt"
+X_WON = "Text/x_won.txt"
+O_WON = "Text/o_won.txt"
+TIED = "Text/tie.txt"
 
 
 class Game:
-    __board = None
-    __board_size = 0
-    actual_player = "O"
-
-    def __init__(self, board_size, need_to_connect):
+    def __init__(self, board_size, ai):
         self.__board_size = board_size
-        self.__board = Board(board_size, need_to_connect)
+        self.__board = Board(board_size, 5)
+        self.__actual_player = "O"
+        self.__ai_player = random.choice(PLAYERS)
+        if ai == "AI-simple":
+            self.__ai = AI(board_size, self.__ai_player)
 
     def __get_move(self):
         while True:
@@ -49,23 +48,22 @@ class Game:
                 print("Input is too short!")
 
     def switch_player(self):
-        if self.actual_player == 'X':
-            return 'O'
-        return 'X'
+        if self.__actual_player == 'X':
+            self.__actual_player = 'O'
+        else:
+            self.__actual_player = 'X'
 
     def play_game(self, board_margin=0):
-        self.actual_player = random.choice(PLAYERS)
-        ai_player = random.choice(PLAYERS)
-        ai = MinimaxAi(self.__board_size, ai_player)
+        self.__actual_player = random.choice(PLAYERS)
 
         while True:
-            self.actual_player = self.switch_player()
+            self.switch_player()
             Printer.clear()
             Printer.print_board(self.__board.create_str())
-            print(f"It is {self.actual_player} turn!")
+            print(f"It is {self.__actual_player} turn!")
 
-            if ai_player == self.actual_player:
-                coordinate = ai.get_next_move()
+            if self.__ai_player == self.__actual_player:
+                coordinate = self.__ai.get_next_move()
             else:
                 coordinate = self.__get_move()
 
@@ -74,8 +72,8 @@ class Game:
             if coordinate is None:
                 return
 
-            self.__board.mark(self.actual_player, coordinate[0], coordinate[1])
-            ai.mark_cord(coordinate[0], coordinate[1], self.actual_player)
+            self.__board.mark(self.__actual_player, coordinate[0], coordinate[1])
+            self.__ai.mark_cord(coordinate[0], coordinate[1], self.__actual_player)
 
             result = self.__get_result(coordinate[0], coordinate[1])
             if result is not None:
@@ -84,8 +82,8 @@ class Game:
                 return
 
     def __get_result(self, row, col):
-        if self.__board.is_coordinate_won(self.actual_player, row, col):
-            if self.actual_player == 'X':
+        if self.__board.is_coordinate_won(self.__actual_player, row, col):
+            if self.__actual_player == 'X':
                 return X_WON
             else:
                 return O_WON
