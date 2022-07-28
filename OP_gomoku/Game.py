@@ -2,6 +2,7 @@ import random
 from Board import Board
 from Printer import Printer
 from AI.AI import AI
+from AI.MinimaxAi import MinimaxAi
 
 ABC = "ABCDEFGHIJKLMNOPQRST"
 PLAYERS = ['X', 'O']
@@ -18,6 +19,8 @@ class Game:
         self.__ai_player = random.choice(PLAYERS)
         if ai == "AI-simple":
             self.__ai = AI(board_size, self.__ai_player)
+        else:
+            self.__ai = MinimaxAi(board_size, self.__ai_player)
 
     def __get_move(self):
         while True:

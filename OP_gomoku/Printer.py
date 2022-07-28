@@ -27,25 +27,9 @@ class Printer:
         Printer.clear()
         Printer.__print_file(LOGO)
         print('''
-                      ---  1: Tic-Tac-Toe   ---
-                      ---  2: Small Board   ---
-                      ---  3: Medium Board  ---
-                      ---  4:  Huge Board   ---
+                      ---    1: Simple      ---
+                      ---    2: Minimax     ---
                       ---       Quit        ---
-
-        ''')
-
-    @staticmethod
-    def print_game_mode():
-        Printer.clear()
-        Printer.__print_file(LOGO)
-        print('''
-                   ---  1: Human vs Human       ---
-                   ---  2: Human vs Ai          ---
-                   ---  3: Human vs MentorBoss  ---
-                   ---  4: Ai vs Ai             ---
-                   ---          Quit            ---
-
         ''')
 
     @staticmethod
