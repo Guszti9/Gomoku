@@ -9,13 +9,10 @@ def create_margin(margin):
 
 
 class Board:
-    __board_size = 0
-    __need_to_connect = 0
-    __board = []
-
     def __init__(self, board_size, need_to_connect):
         self.__board_size = board_size
         self.__need_to_connect = need_to_connect
+        self.__board = []
 
         for row in range(board_size):
             new_row = []
