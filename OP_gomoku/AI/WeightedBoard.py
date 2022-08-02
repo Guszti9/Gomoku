@@ -10,6 +10,9 @@ class WeightedBoard:
             return self.__board[row][col].get_cell_value()
         return None
 
+    def get_cord(self, row, col):
+        return self.__board[row][col]
+
     def get_weighted_board_value(self):
         board_sum = 0
         for row in self.__board:

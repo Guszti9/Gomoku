@@ -15,6 +15,9 @@ def main_menu():
         if inp == '2':
             game = Game(15, "AI-minimax")
             game.play_game()
+        if inp == '3':
+            game = Game(15, "AI-advance")
+            game.play_game()
 
 
 main_menu()

@@ -1,5 +1,3 @@
-
-
 class PatternRecogniser:
     patterns_six = {
         ".||||.": 50000,

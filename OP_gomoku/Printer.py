@@ -29,6 +29,7 @@ class Printer:
         print('''
                       ---    1: Simple      ---
                       ---    2: Minimax     ---
+                      ---    3: Advance     ---
                       ---       Quit        ---
         ''')
 
