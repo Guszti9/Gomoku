@@ -7,7 +7,7 @@ from AI.GomokuAI.BoardState.BoardStateTree import BoardStateTree
 
 class AdvanceAi:
     def __init__(self, board_size, player, best_move_count=6):
-        self.player = player
+        self.__player = player
         self.__turn = 0
         self.__board_size = board_size
         x_board = WeightedBoard(board_size, "X")
@@ -20,8 +20,8 @@ class AdvanceAi:
         if self.__turn == 0:
             return math.floor(self.__board_size / 2), math.floor(self.__board_size / 2)
 
-        self.board_state_tree.create_state_tree(self.player)
-        return self.board_state_tree.get_next_move(self.player)
+        self.board_state_tree.create_state_tree(self.__player)
+        return self.board_state_tree.get_next_move(self.__player)
 
     def mark_cord(self, row, col, player):
         BoardStateTree.delete_depth(self.__turn)

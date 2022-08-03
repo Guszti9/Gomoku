@@ -15,12 +15,17 @@ class BoardState:
     existing_board_states = {}
 
     # Calculate board state value. WHY DOES IT WORK???
-    def get_state_value(self, player):
+    def get_state_value(self, player, ai_player):
         if self.__state_value is not None:
             return self.__state_value
         if len(self.__children_board_states) == 0:
-            return self.get_board_value(player)
-        return max([state.get_state_value(BoardState.switch_player(player)) for state in self.__children_board_states])
+            return self.get_board_value(ai_player)
+
+        new_player = BoardState.switch_player(player)
+        if player == ai_player:
+            return max([state.get_state_value(new_player, ai_player) for state in self.__children_board_states])
+        else:
+            return min([state.get_state_value(new_player, ai_player) for state in self.__children_board_states])
 
     def get_board_value(self, player):
         return self.__board_value.get_value(player)

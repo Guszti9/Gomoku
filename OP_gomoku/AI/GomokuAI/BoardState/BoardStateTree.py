@@ -1,10 +1,8 @@
 import math
-
 from AI.GomokuAI.BoardState.BoardState import BoardState
 
 
 class BoardStateTree:
-
     def get_new_board_state_tree(self, cord, player, depth):
         new_start_board_state = self.__start_board_state.get_next_board_state(cord, player)
         return BoardStateTree(new_start_board_state, self.__move_count + 1, depth, self.__best_move_count)
@@ -41,7 +39,7 @@ class BoardStateTree:
 
     @staticmethod
     def __calculate_next_step(board_state, player):
-        return board_state.get_state_value(player)
+        return board_state.get_state_value(player, BoardStateTree.switch_player(player))
 
     @staticmethod
     def delete_depth(depth):
