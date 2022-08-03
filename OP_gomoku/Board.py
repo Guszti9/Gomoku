@@ -35,19 +35,19 @@ class Board:
                     return False
         return True
 
-    def get_cells_in_row(self, row):
+    def __get_cells_in_row(self, row):
         return [self.__board[row][col] for col in range(self.__board_size)]
 
-    def get_cells_in_col(self, col):
+    def __get_cells_in_col(self, col):
         return [self.__board[row][col] for row in range(self.__board_size)]
 
-    def get_cells_in_down_diag(self, row, col):
+    def __get_cells_in_down_diag(self, row, col):
         dif = row - col
         first_row = dif if dif > 0 else 0
         first_col = abs(dif) if dif < 0 else 0
         return [self.__board[first_row + d][first_col + d] for d in range(self.__board_size - abs(dif))]
 
-    def get_cells_in_up_diag(self, row, col):
+    def __get_cells_in_up_diag(self, row, col):
         sum = row + col + 1
         dif = sum if sum <= self.__board_size else self.__board_size - (sum - self.__board_size)
         first_row = sum - 1 if sum < self.__board_size else self.__board_size - 1
@@ -55,16 +55,16 @@ class Board:
         return [self.__board[first_row - d][first_col + d] for d in range(abs(dif))]
 
     def is_coordinate_won(self, player, row, col):
-        row_win = self.get_cells_in_row(row)
+        row_win = self.__get_cells_in_row(row)
         if self.__is_coordinate_list_won(row_win, player):
             return True
-        col_win = self.get_cells_in_col(col)
+        col_win = self.__get_cells_in_col(col)
         if self.__is_coordinate_list_won(col_win, player):
             return True
-        diag_win_1 = self.get_cells_in_down_diag(row, col)
+        diag_win_1 = self.__get_cells_in_down_diag(row, col)
         if self.__is_coordinate_list_won(diag_win_1, player):
             return True
-        diag_win_2 = self.get_cells_in_up_diag(row, col)
+        diag_win_2 = self.__get_cells_in_up_diag(row, col)
         if self.__is_coordinate_list_won(diag_win_2, player):
             return True
         return False

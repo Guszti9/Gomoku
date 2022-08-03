@@ -1,5 +1,5 @@
 from AI.WeightedBoard import WeightedBoard
-from AI.Move import Move
+from AI.GomokuAI.Move.Move import Move
 
 
 class MinimaxAi:

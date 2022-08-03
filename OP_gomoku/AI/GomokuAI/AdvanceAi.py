@@ -1,8 +1,8 @@
 import math
 
-from AI.BoardState import BoardState
+from AI.GomokuAI.BoardState.BoardState import BoardState
 from AI.WeightedBoard import WeightedBoard
-from AI.BoardStateTree import BoardStateTree
+from AI.GomokuAI.BoardState.BoardStateTree import BoardStateTree
 
 
 class AdvanceAi:
@@ -24,10 +24,13 @@ class AdvanceAi:
         return self.board_state_tree.get_next_move(self.player)
 
     def mark_cord(self, row, col, player):
+        BoardStateTree.delete_depth(self.__turn)
         self.__turn += 1
         self.board_state_tree = self.board_state_tree.get_new_board_state_tree((row, col), player, self.__get_new_depth())
 
     def __get_new_depth(self):
+        if self.__turn > 5:
+            return 8
         if self.__turn > 3:
             return 6
         return 4

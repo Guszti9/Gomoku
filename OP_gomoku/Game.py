@@ -1,9 +1,9 @@
 import random
 from Board import Board
 from Printer import Printer
-from AI.AI import AI
-from AI.MinimaxAi import MinimaxAi
-from AI.AdvanceAi import AdvanceAi
+from AI.GomokuAI.AI import AI
+from AI.GomokuAI.MinimaxAi import MinimaxAi
+from AI.GomokuAI.AdvanceAi import AdvanceAi
 
 ABC = "ABCDEFGHIJKLMNOPQRST"
 PLAYERS = ['X', 'O']
